@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title>Surplus Intelligence</title>
+    <script type="module" src="/components/plugins/plugin-settings-store.js"></script>
+    <style>
+        @media (max-width: 600px) {
+            .surplus-settings .field { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div x-data>
+        <template x-if="config">
+            <div class="surplus-settings">
+                <div class="section-title">Connection</div>
+                <div class="section-description">
+                    Choose Surplus Intelligence in Model Configuration for Main, Utility, or Vision.
+                    Enter your API key there; models load from Surplus's catalog.
+                    These defaults apply to all Surplus calls. Model-specific extra parameters override them.
+                </div>
+
+                <div class="section-title">Providers</div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-allow" class="field-title">Allowed providers</label>
+                        <div class="field-description">Names or hosts, one per line or comma-separated. Blank allows any eligible provider. Example: api.openai.com</div>
+                    </div>
+                    <div class="field-control"><textarea id="si-allow" rows="3" x-model="config.provider" placeholder="Any eligible provider"></textarea></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-block" class="field-title">Blocked providers</label>
+                        <div class="field-description">Up to 32 names or hosts. Blocks take precedence over the allow-list, including buyer-owned routes.</div>
+                    </div>
+                    <div class="field-control"><textarea id="si-block" rows="3" x-model="config.providers_blocked" placeholder="None"></textarea></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-order" class="field-title">Preferred order</label>
+                        <div class="field-description">Most preferred first. Unlisted eligible providers can still serve the request. May increase cost or reduce cache hits.</div>
+                    </div>
+                    <div class="field-control"><textarea id="si-order" rows="3" x-model="config.provider_order" placeholder="Surplus default"></textarea></div>
+                </div>
+
+                <div class="section-title">Routing</div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-objective" class="field-title">Priority</label>
+                        <div class="field-description">Latency and reliability rank offers within the price band, with other offers available on failover.</div>
+                    </div>
+                    <div class="field-control">
+                        <select id="si-objective" x-model="config.objective">
+                            <option value="">Surplus default</option>
+                            <option value="price">Lowest estimated price</option>
+                            <option value="latency">Lowest observed latency</option>
+                            <option value="reliability">Highest observed reliability</option>
+                            <option value="price_without_cache">Lowest price, no cache affinity</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-tolerance" class="field-title">Price tolerance (%)</label>
+                        <div class="field-description">Price band above the cheapest eligible offer. An ordering preference, not a spending cap. Blank uses Surplus's default.</div>
+                    </div>
+                    <div class="field-control"><input id="si-tolerance" type="number" min="0" step="any" x-model="config.price_tolerance_pct" placeholder="Default" /></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-latency" class="field-title">Observed latency limit (ms)</label>
+                        <div class="field-description">Exclude offers with a higher observed p50. Offers without latency history remain eligible. This is not a request timeout.</div>
+                    </div>
+                    <div class="field-control"><input id="si-latency" type="number" min="1" step="1" x-model="config.max_latency_ms" placeholder="No filter" /></div>
+                </div>
+                <div class="field">
+                    <div class="field-label">
+                        <label for="si-discount" class="field-title">Minimum discount (%)</label>
+                        <div class="field-description">0–100, relative to external list price. Applies to estimated marketplace cost, not buyer-owned routes. The strictest key, URL, or request floor wins. Blank adds no floor; 0 still excludes above-list offers.</div>
+                    </div>
+                    <div class="field-control"><input id="si-discount" type="number" min="0" max="100" step="1" x-model="config.min_discount_pct" placeholder="No additional floor" /></div>
+                </div>
+
+                <div class="section-title">Model parameters</div>
+                <div class="section-description">
+                    Set reasoning effort, output limits, temperature, and timeouts per model in Model Configuration.
+                    Chat Completions is the default. Responses is opt-in with local history; hosted tools and server-side response persistence are not guaranteed.
+                    Requests use your Surplus credits. Narrow routing can fail when no eligible seller is available.
+                </div>
+            </div>
+        </template>
+    </div>
+</body>
+</html>

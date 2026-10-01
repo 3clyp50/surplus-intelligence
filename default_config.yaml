@@ -1,0 +1,7 @@
+provider: ""
+providers_blocked: ""
+provider_order: ""
+objective: ""
+price_tolerance_pct: ""
+max_latency_ms: ""
+min_discount_pct: ""

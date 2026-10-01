@@ -1,0 +1,11 @@
+chat:
+  surplus:
+    name: Surplus Intelligence
+    litellm_provider: openai
+    models_list:
+      endpoint_url: https://api.surplusintelligence.ai/v1/models
+    kwargs:
+      api_base: https://api.surplusintelligence.ai/v1
+      a0_api_mode: chat
+      responses_state: local
+      a0_responses_fallback: false
